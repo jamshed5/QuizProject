@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz-App</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <a href="flow.png" target="_blank"><h2>My Script flow diagram</h2></a>
+    <hr>
+    <button id="generateQuiz">Generate Quiz</button>
+    <button id="quizList">Quiz List</button>
+    
+    <h2>Create Questions</h2> <hr>
+    <span>Total Number of Added Quizs: </span>
+    <span id="quizCounts">0</span>
+
+    <hr>
+    <form action="" method="POST" id="quizForm">
+        <label for="">Write Question :</label>
+        <textarea name="question" id="question" rows="4" required></textarea>
+        <label for="">Option 1 :</label>
+        <input type="text" name="option1" id="option1" required>
+        <label for="">Option 2 :</label>
+        <input type="text" name="option2" id="option2" required>
+        <label for="">Option 3 :</label>
+        <input type="text" name="option3" id="option3" required>
+        <label for="">Option 4 :</label>
+        <input type="text" name="option4" id="option4" required>
+        <label for="">Correct Answer :</label>
+        <input type="text" name="correctAnswer" id="correctAnswer" required>
+        <button type="submit">Submit</button>
+    </form>
+    <hr>
+    <p id="error"></p>
+    <p id="listOfQuiz"></p>
+    
+    
+    <script src="script.js"></script>
+   
+</body>
+</html>
+
