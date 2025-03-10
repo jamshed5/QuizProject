@@ -3,7 +3,7 @@ const quizArrayOfObjects = []
 
 
 // generate quiz btn true/false 
-const GenerateQuizbtn = () => {
+const generateQuizbtn = () => {
     const generateQuizButton = document.getElementById("generateQuiz")
     generateQuizButton.disabled = quizArrayOfObjects.length === 0 // set true/false
 }
@@ -11,56 +11,54 @@ const GenerateQuizbtn = () => {
 
 // validations for options and correct answer
 const ValidationAndColor=()=>{
+    
     // for color
-    document.addEventListener("DOMContentLoaded", () => {
-        // get inputs
-        const correctAnswer = document.querySelector("#correctAnswer")
-        const option1Input = document.querySelector("#option1")
-        const option2Input = document.querySelector("#option2")
-        const option3Input = document.querySelector("#option3")
-        const option4Input = document.querySelector("#option4")
+    const correctAnswer = document.querySelector("#correctAnswer")
+    const option1Input = document.querySelector("#option1")
+    const option2Input = document.querySelector("#option2")
+    const option3Input = document.querySelector("#option3")
+    const option4Input = document.querySelector("#option4")
     
-        correctAnswer.addEventListener("input", (event) => {
-            // get values
-            const correctAnswerValue = event.target.value.trim().toLowerCase()
-            const option1 = option1Input.value.trim().toLowerCase()
-            const option2 = option2Input.value.trim().toLowerCase()
-            const option3 = option3Input.value.trim().toLowerCase()
-            const option4 = option4Input.value.trim().toLowerCase()
+    correctAnswer.addEventListener("input", (event) => {
+        // get values
+        const correctAnswerValue = event.target.value.trim().toLowerCase()
+        const option1 = option1Input.value.trim().toLowerCase()
+        const option2 = option2Input.value.trim().toLowerCase()
+        const option3 = option3Input.value.trim().toLowerCase()
+        const option4 = option4Input.value.trim().toLowerCase()
     
-            //  allInputs array
-            const allInputs = [option1Input, option2Input, option3Input, option4Input]
+        //  allInputs array
+        const allInputs = [option1Input, option2Input, option3Input, option4Input]
     
-            // reset colors 
-            allInputs.forEach(input => {
-                input.style.backgroundColor = ""
-            })
+        // reset colors 
+        allInputs.forEach(input => {
+            input.style.backgroundColor = ""
+        })
     
-            // matching and setting correct answer color
-            // rgb(144, 238, 144) green
-            if (correctAnswerValue === option1) {
-                option1Input.style.backgroundColor = "rgb(144, 238, 144)" 
-            } 
-            if (correctAnswerValue === option2) {
-                option2Input.style.backgroundColor = "rgb(144, 238, 144)" 
-            } 
-            if (correctAnswerValue === option3) {
-                option3Input.style.backgroundColor = "rgb(144, 238, 144)" 
-            } 
-            if (correctAnswerValue === option4) {
-                option4Input.style.backgroundColor = "rgb(144, 238, 144)" 
+        // matching and setting correct answer color
+        // rgb(144, 238, 144) green
+        if (correctAnswerValue === option1) {
+            option1Input.style.backgroundColor = "rgb(144, 238, 144)" 
+        } 
+        if (correctAnswerValue === option2) {
+            option2Input.style.backgroundColor = "rgb(144, 238, 144)" 
+        } 
+        if (correctAnswerValue === option3) {
+            option3Input.style.backgroundColor = "rgb(144, 238, 144)" 
+        } 
+        if (correctAnswerValue === option4) {
+            option4Input.style.backgroundColor = "rgb(144, 238, 144)" 
+        }
+    
+        // set light red for incorrect options
+        allInputs.forEach(input => {
+            //light red incorrect answer and empty case
+            // its loop value geting using input.value.trim().toLowerCase()
+            const inputValue = input.value.trim().toLowerCase()
+            if (inputValue !== correctAnswerValue && inputValue !== "") {
+                // light red for incorrect answers
+                input.style.backgroundColor = "rgb(255, 127, 127)" 
             }
-    
-            // set light red for incorrect options
-            allInputs.forEach(input => {
-                //light red incorrect answer and empty case
-                // its loop value geting using input.value.trim().toLowerCase()
-                const inputValue = input.value.trim().toLowerCase()
-                if (inputValue !== correctAnswerValue && inputValue !== "") {
-                    // light red for incorrect answers
-                    input.style.backgroundColor = "rgb(255, 127, 127)" 
-                }
-            })
         })
     })
 }
@@ -68,15 +66,15 @@ const ValidationAndColor=()=>{
 
 // reset color for inputs 
 let validationResetColor=()=>{
-        const correctAnswer = document.querySelector("#correctAnswer")
-        const option1Input = document.querySelector("#option1")
-        const option2Input = document.querySelector("#option2")
-        const option3Input = document.querySelector("#option3")
-        const option4Input = document.querySelector("#option4")
-        option1Input.style.backgroundColor=""
-        option2Input.style.backgroundColor=""
-        option3Input.style.backgroundColor=""
-        option4Input.style.backgroundColor=""      
+    const correctAnswer = document.querySelector("#correctAnswer")
+    const option1Input = document.querySelector("#option1")
+    const option2Input = document.querySelector("#option2")
+    const option3Input = document.querySelector("#option3")
+    const option4Input = document.querySelector("#option4")
+    option1Input.style.backgroundColor=""
+    option2Input.style.backgroundColor=""
+    option3Input.style.backgroundColor=""
+    option4Input.style.backgroundColor=""      
 }
 
 
@@ -209,19 +207,19 @@ const quizList=()=>{
                 
             })
            
-                const correctAnswerbtn=document.createElement("button")
-                correctAnswerbtn.setAttribute("id",quiz.id)
-                correctAnswerbtn.setAttribute("value",quiz.explanation)
-                correctAnswerbtn.innerText="check correct"
-                optionsList.appendChild(correctAnswerbtn)
-                // check explanation
-                correctAnswerbtn.addEventListener("click",(event)=>{
-                    const p=document.createElement("p")
-                    p.innerText=quiz.explanation
-                    optionsList.append(p)
-                    correctAnswerbtn.disabled=true
+            const correctAnswerbtn=document.createElement("button")
+            correctAnswerbtn.setAttribute("id",quiz.id)
+            correctAnswerbtn.setAttribute("value",quiz.explanation)
+            correctAnswerbtn.innerText="check correct"
+            optionsList.appendChild(correctAnswerbtn)
+            // check explanation
+            correctAnswerbtn.addEventListener("click",(event)=>{
+                const p=document.createElement("p")
+                p.innerText=quiz.explanation
+                optionsList.append(p)
+                correctAnswerbtn.disabled=true
 
-                })
+            })
             quizContainer.appendChild(optionsList)
             listOfQuiz.appendChild(quizContainer)
         })
@@ -229,20 +227,68 @@ const quizList=()=>{
 })
 }
 
+// quizSearch 
+let quizSearch = () => {
+    const inputField = document.getElementById("query")
+    const listOfQuiz = document.getElementById("listOfQuiz")
+
+    inputField.addEventListener("input", (event) => {
+        // getting query
+        const query = event.target.value.trim().toLowerCase()
+        
+        // rest
+        listOfQuiz.innerHTML = ""
+
+        let found = false
+
+        quizArrayOfObjects.forEach((quiz) => {
+            if (quiz.question.toLowerCase().includes(query)) {
+
+                found = true
+
+                const quizContainer = document.createElement("div")
+                // set color using mark html tag
+                const highlightedQuestion = quiz.question.replace(query, `<mark>${query}</mark>`)
+
+                const questionHeader = document.createElement("h4")
+                questionHeader.innerHTML = highlightedQuestion
+                quizContainer.appendChild(questionHeader)
+
+                // Create list of options
+                const optionsList = document.createElement("ul")
+
+                quiz.options.forEach(option => {
+                    const optionItem = document.createElement("li")
+                    optionItem.innerText = option.text
+                    optionsList.appendChild(optionItem)
+                })
+
+                quizContainer.appendChild(optionsList)
+                listOfQuiz.appendChild(quizContainer)
+            }
+        })
+
+        if (!found) {
+            listOfQuiz.innerHTML = "<h3>No matching quizzes found.</h3>"
+        }
+    })
+}
+
+
 // Main 
-GenerateQuizbtn() 
+generateQuizbtn() 
 // validation
 ValidationAndColor()
 // submit
 const fm = document.getElementById("quizForm")
 fm.addEventListener("submit", (event) => {
     event.preventDefault()
-    const question = document.querySelector("#question").value
-    const option1 = document.querySelector("#option1").value
-    const option2 = document.querySelector("#option2").value
-    const option3 = document.querySelector("#option3").value
-    const option4 = document.querySelector("#option4").value
-    const correctAnswer = document.querySelector("#correctAnswer").value
+    const question = document.querySelector("#question").value.trim()
+    const option1 = document.querySelector("#option1").value.trim()
+    const option2 = document.querySelector("#option2").value.trim()
+    const option3 = document.querySelector("#option3").value.trim()
+    const option4 = document.querySelector("#option4").value.trim()
+    const correctAnswer = document.querySelector("#correctAnswer").value.trim()
 
     // Check for unique options
     let uniqueOptions = new Set([option1, option2, option3, option4])
@@ -268,7 +314,7 @@ fm.addEventListener("submit", (event) => {
             if (quizCountsTagSpan) {
                 quizCountsTagSpan.innerText = quizLength
                 // enable generate quiz button
-                GenerateQuizbtn() 
+                generateQuizbtn() 
                 // reset color for the inputs
                 validationResetColor()
             }
@@ -290,6 +336,9 @@ generateQuizButton.addEventListener("click", (event) => {
     }    
 })
 
+
+// quiz search list
+quizSearch()
 // show list
 quizList()
 
