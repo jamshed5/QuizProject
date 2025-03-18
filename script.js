@@ -2,124 +2,280 @@
 const quizArrayOfObjects = []
 
 
-// generate quiz btn true/false 
-const GenerateQuizbtn = () => {
-    const generateQuizButton = document.getElementById("generateQuiz")
-    generateQuizButton.disabled = quizArrayOfObjects.length === 0 // set true/false
+// menu bar 
+const body = document.body
+// menuDiv
+const menuDiv = document.createElement("div")
+menuDiv.setAttribute("id", "menuDiv")
+body.prepend(menuDiv)
+// menuDiv -> Buttons
+const buttons = [
+    { text: "Add Quiz", id: "addQuizBtn" },
+    { text: "Quiz List", id: "quizListBtn" },
+    { text: "Add Players & Run Competition", id: "addPlayersBtn" }
+]
+buttons.forEach(({ text, id }) => {
+    const button = document.createElement("button")
+    button.setAttribute("type", "button")
+    button.setAttribute("id", id)
+    button.innerHTML = text
+    menuDiv.appendChild(button)
+})
+
+
+// create quiz object 
+const createQuizObject = (question, option1, option2, option3, option4, correctAnswer) => {
+    if (!question || !option1 || !option2 || !option3 || !option4 || !correctAnswer) {
+        return "All fields are required."
+    }
+    // quiz object
+    const quiz = { question, 
+        options: [option1, option2, option3, option4], 
+        correctAnswer }
+    
+        // push
+    quizArrayOfObjects.push(quiz)
+    return quiz
 }
+// reset input colors 
+const validationResetColor = () => {
+    document.querySelectorAll("#option1, #option2, #option3, #option4").forEach((input) => {
+        input.style.backgroundColor = ""
+    })
+}
+// Update option colors based on correct answer 
+const updateOptionColors = (correctAnswer) => {
+    correctAnswer = correctAnswer.trim().toLowerCase()
+    const options = ["#option1", "#option2", "#option3", "#option4"].map((id) =>
+        document.querySelector(id)
+    )
 
+    options.forEach((input) => {
+        // getting all inputs value and matching
+        const value = input.value.trim().toLowerCase()
+        if (value === correctAnswer) {
+            input.style.backgroundColor = "rgb(144, 238, 144)" // light green for correct answer
+        } else if (value !== "") {
+            input.style.backgroundColor = "rgb(255, 127, 127)" // light red for incorrect options
+        } else {
+            input.style.backgroundColor = "" // reset empty fields
+        }
+    })
+}
+// create (form) and add quiz 
+let quizForm
+const createAndAddQuiz = () => {
+    const addQuizBtn = document.getElementById("addQuizBtn")
+    addQuizBtn.addEventListener("click", () => {
+        if (!quizForm) {
+            // creating quiz form
+            const scriptTag = document.querySelector("script")
+            quizForm = document.createElement("form")
+            quizForm.setAttribute("id", "quizForm")
 
-// validations for options and correct answer
-const ValidationAndColor=()=>{
-    // for color
-    document.addEventListener("DOMContentLoaded", () => {
-        // get inputs
-        const correctAnswer = document.querySelector("#correctAnswer")
-        const option1Input = document.querySelector("#option1")
-        const option2Input = document.querySelector("#option2")
-        const option3Input = document.querySelector("#option3")
-        const option4Input = document.querySelector("#option4")
-    
-        correctAnswer.addEventListener("input", (event) => {
-            // get values
-            const correctAnswerValue = event.target.value.trim().toLowerCase()
-            const option1 = option1Input.value.trim().toLowerCase()
-            const option2 = option2Input.value.trim().toLowerCase()
-            const option3 = option3Input.value.trim().toLowerCase()
-            const option4 = option4Input.value.trim().toLowerCase()
-    
-            //  allInputs array
-            const allInputs = [option1Input, option2Input, option3Input, option4Input]
-    
-            // reset colors 
-            allInputs.forEach(input => {
-                input.style.backgroundColor = ""
+            // error message
+            const error = document.createElement("div")
+            error.setAttribute("id", "error")
+            error.style.color = "white"
+            error.style.backgroundColor="red"
+            quizForm.appendChild(error)
+
+            // create from fields label and inputs
+            const fields = [
+                { label: "Question:", id: "question" },
+                { label: "Option 1:", id: "option1" },
+                { label: "Option 2:", id: "option2" },
+                { label: "Option 3:", id: "option3" },
+                { label: "Option 4:", id: "option4" },
+                { label: "Correct Answer:", id: "correctAnswer" }
+            ]
+
+            fields.forEach(({ label, id }) => {
+                const labelElement = document.createElement("label")
+                labelElement.setAttribute("for", id)
+                labelElement.innerHTML = label
+
+                const inputElement = document.createElement("input")
+                inputElement.setAttribute("type", "text")
+                inputElement.setAttribute("id", id)
+                inputElement.setAttribute("name", id)
+                inputElement.setAttribute("required", "")
+
+                quizForm.appendChild(labelElement)
+                quizForm.appendChild(inputElement)
             })
-    
-            // matching and setting correct answer color
-            // rgb(144, 238, 144) green
-            if (correctAnswerValue === option1) {
-                option1Input.style.backgroundColor = "rgb(144, 238, 144)" 
-            } 
-            if (correctAnswerValue === option2) {
-                option2Input.style.backgroundColor = "rgb(144, 238, 144)" 
-            } 
-            if (correctAnswerValue === option3) {
-                option3Input.style.backgroundColor = "rgb(144, 238, 144)" 
-            } 
-            if (correctAnswerValue === option4) {
-                option4Input.style.backgroundColor = "rgb(144, 238, 144)" 
-            }
-    
-            // set light red for incorrect options
-            allInputs.forEach(input => {
-                //light red incorrect answer and empty case
-                // its loop value geting using input.value.trim().toLowerCase()
-                const inputValue = input.value.trim().toLowerCase()
-                if (inputValue !== correctAnswerValue && inputValue !== "") {
-                    // light red for incorrect answers
-                    input.style.backgroundColor = "rgb(255, 127, 127)" 
+
+            // add quiz button (submit)
+            const submitQuizBtn = document.createElement("button")
+            submitQuizBtn.setAttribute("type", "submit")
+            submitQuizBtn.setAttribute("id", "submitQuizBtn")
+            submitQuizBtn.innerHTML = "Add Quiz"
+            quizForm.appendChild(submitQuizBtn)
+
+            // adding form before script tag
+            body.insertBefore(quizForm, scriptTag)
+            quizForm.style.display = "flex"
+            // change name hide
+            addQuizBtn.innerHTML = "Hide Quiz Form"
+
+                // submit form
+                quizForm.addEventListener("submit", (event) => {
+                    event.preventDefault()
+
+                    // getting values 
+                    const question = document.querySelector("#question").value.trim()
+                    const option1 = document.querySelector("#option1").value.trim()
+                    const option2 = document.querySelector("#option2").value.trim()
+                    const option3 = document.querySelector("#option3").value.trim()
+                    const option4 = document.querySelector("#option4").value.trim()
+                    const correctAnswer = document.querySelector("#correctAnswer").value.trim()
+                    
+                    // for unique options using set
+                    let uniqueOptions = new Set([option1, option2, option3, option4])
+                    error.innerText = ""
+
+                    if (uniqueOptions.size === 4) {
+                        // call createQuizObject()
+                        let result = createQuizObject(question, option1, option2, option3, option4, correctAnswer)
+                        if (typeof result === "string") {
+                            error.innerText = result
+                        } else {
+                            // if sucessfull its mean have quiz object
+                            // reset quiz form
+                            quizForm.reset()
+                            // reset validation colors
+                            validationResetColor()
+                            console.log("quizArrayOfObjects:", quizArrayOfObjects)
+                        }
+                    } else {
+                        // not unique 
+                        error.innerText = "Error: Need unique options (cannot submit)"
+                    }
+                })
+
+            // validation and coloring
+            quizForm.addEventListener("input", (event) => {
+                if (event.target.id === "correctAnswer") {
+                    // call updateOptionColors() and passing value of input for matching case
+                    updateOptionColors(event.target.value)
                 }
             })
-        })
-    })
-}
 
-
-// reset color for inputs 
-let validationResetColor=()=>{
-        const correctAnswer = document.querySelector("#correctAnswer")
-        const option1Input = document.querySelector("#option1")
-        const option2Input = document.querySelector("#option2")
-        const option3Input = document.querySelector("#option3")
-        const option4Input = document.querySelector("#option4")
-        option1Input.style.backgroundColor=""
-        option2Input.style.backgroundColor=""
-        option3Input.style.backgroundColor=""
-        option4Input.style.backgroundColor=""      
-}
-
-
-// create quiz object
-let createQuizObject = (question, option1, option2, option3, option4, correctAnswer) => {
-    let exist = quizArrayOfObjects.some((q) => {
-        return q.question === question
-    })
-
-    if (exist) {
-        let message
-        message = `Your question: [${question}] already exists`
-        return message
-    } else {
-        // Create the quiz object
-        const quizQuestion = {
-            id: quizArrayOfObjects.length + 1,
-            question: question,
-            options: [],
-            explanation: `The correct answer is ${correctAnswer}`
+        } else {
+            // toggle (show and hide quiz form)
+            if (quizForm.style.display === "none" || quizForm.style.display === "") {
+                quizForm.style.display = "flex"
+                addQuizBtn.innerHTML = "Hide Quiz Form"
+            } else {
+                quizForm.style.display = "none"
+                addQuizBtn.innerHTML = "Add Quiz"
+            }
+            
         }
-        // Push options into the quiz object
-        let all_options = [option1, option2, option3, option4]
-        all_options.forEach(option => {
-            quizQuestion.options.push({
-                text: option,
-                isCorrect: option === correctAnswer // set (true/false)
-            })
-        })
-        // Push to the array
-        quizArrayOfObjects.push(quizQuestion)
-        return quizArrayOfObjects
-    }
+    })
 }
 
 
-// render quiz 
-const renderQuiz = () => {
-    document.body.innerHTML=""
-    const fm = document.createElement("form")
-    fm.setAttribute("method", "post")
+// show quiz list 
+const quizList = () => {
+    const listOfQuizBtn = document.getElementById("quizListBtn")
+    listOfQuizBtn.addEventListener("click", () => {
+        
+        //  at now listOfQuiz null
+        let listOfQuiz = document.getElementById("listOfQuiz")
+        
+        // hide the quiz form if it's open
+        if (quizForm) {
+            quizForm.style.display = "none"
+            addQuizBtn.innerHTML = "Add Quiz" // reset add quiz button text
+        }
 
-    quizArrayOfObjects.forEach(quiz => {
+        // if listOfQuiz doesn't exist, create it
+        if (!listOfQuiz) {
+            listOfQuiz = document.createElement("div")
+            listOfQuiz.setAttribute("id", "listOfQuiz")
+            body.appendChild(listOfQuiz)
+        }
+
+        // toggle
+        if (listOfQuiz.style.display === "none" || listOfQuiz.innerHTML === "") {
+            listOfQuiz.style.display = "block" // show quiz list
+            listOfQuizBtn.innerHTML = "Hide Quiz List" // change button text
+        } else {
+            listOfQuiz.style.display = "none" // hide quiz list
+            listOfQuizBtn.innerHTML = "Quiz List" // reset button text
+            return // exit function early
+        }
+
+        // clear previous content
+        listOfQuiz.innerHTML = ""
+
+        if (quizArrayOfObjects.length === 0) {
+            const noQuizMessage = document.createElement("h3")
+            noQuizMessage.innerText = "No quizzes available."
+            listOfQuiz.appendChild(noQuizMessage)
+        } else {
+            quizArrayOfObjects.forEach((quiz, index) => {
+                console.log(index)
+                const quizContainer = document.createElement("div")
+
+                // question header
+                const questionHeader = document.createElement("h4")
+                questionHeader.innerText = quiz.question
+                quizContainer.appendChild(questionHeader)
+
+                // options list
+                const optionsList = document.createElement("ul")
+                quiz.options.forEach(option => {
+                    const optionItem = document.createElement("li")
+                    optionItem.innerText = option
+                    optionsList.appendChild(optionItem)
+                })
+
+                // button to check correct answer
+                const correctAnswerBtn = document.createElement("button")
+                correctAnswerBtn.setAttribute("id", `checkAnswerBtn-${index}`)
+                correctAnswerBtn.innerText = "Check Correct"
+                optionsList.appendChild(correctAnswerBtn)
+
+                // display correct answer on click
+                correctAnswerBtn.addEventListener("click", () => {
+                    const correctAnswerMessage = document.createElement("p")
+                    correctAnswerMessage.innerText = `Correct Answer: ${quiz.correctAnswer}`
+                    optionsList.appendChild(correctAnswerMessage)
+                    correctAnswerBtn.disabled = true
+                })
+
+                quizContainer.appendChild(optionsList)
+
+                // add underline using <hr>
+                const separator = document.createElement("hr")
+                separator.style.margin = "10px 0" // add spacing
+                quizContainer.appendChild(separator)
+
+                listOfQuiz.appendChild(quizContainer)
+            })
+        }
+    })
+}
+
+
+// function to announce the winner using voice
+const announceWinner = (message) => {
+    const speech = new SpeechSynthesisUtterance(message)
+    window.speechSynthesis.speak(speech)
+}
+// function to find the winner
+const getWinner = (players) => {
+    const maxScore = Math.max(...players.map(p => p.score))
+    const winners = players.filter(p => p.score === maxScore)
+    return winners.length > 1 ? "It's a tie!" : `The winner is ${winners[0].playerName} with ${winners[0].score} points!`
+}
+// Render quiz function for each player 
+const renderQuiz = (player, callback) => {
+    const fm = document.createElement("form")
+    
+    quizArrayOfObjects.forEach((quiz, index) => {
         const h2 = document.createElement("h2")
         h2.innerText = quiz.question
         fm.appendChild(h2)
@@ -130,13 +286,11 @@ const renderQuiz = () => {
 
             const input = document.createElement("input")
             input.setAttribute("type", "radio")
-            input.setAttribute("id", option.text)
-            input.setAttribute("name", `quiz-${quiz.id}`)
-            input.setAttribute("value", option.text)
+            input.setAttribute("name", `quiz-${index}`) // ensure radio buttons are grouped by question
+            input.setAttribute("value", option)
 
             const label = document.createElement("label")
-            label.setAttribute("for", option.text)
-            label.innerText = option.text
+            label.innerText = option
 
             li.appendChild(input)
             li.appendChild(label)
@@ -146,156 +300,218 @@ const renderQuiz = () => {
         fm.appendChild(ul)
     })
 
-    // Create submit quiz button 
-    const submitButton = document.createElement("button")
-    submitButton.setAttribute("type", "submit")
-    submitButton.innerText = "Submit Quiz"
-    fm.appendChild(submitButton)
+    // submit
+    const submitBtn= document.createElement("button")
+    submitBtn.setAttribute("type", "submit")
+    submitBtn.innerText = "Submit Quiz"
+    fm.appendChild(submitBtn)
 
-    // Handle form submission
+    document.body.appendChild(fm)
+
+    // handle form submission
     fm.addEventListener("submit", (event) => {
         event.preventDefault()
 
-        // Get selected answers
-        let answers = {}
-        quizArrayOfObjects.forEach(quiz => {
-            const selectedOption = document.querySelector(`input[name="quiz-${quiz.id}"]:checked`)
-            answers[quiz.id] = selectedOption ? selectedOption.value : "not selected"
-        })
-
-        // Log answers
-        console.log("User Answers:", answers)
-        alert("See console for answers object")
-    })
-
-    document.body.appendChild(fm)
-}
-
-// quizList
-const quizList=()=>{
-    // list of quiz
-    const listOfQuizButton = document.getElementById("quizList")
-    listOfQuizButton.addEventListener("click", (event) => {
-    const listOfQuiz = document.getElementById("listOfQuiz")
-
-    // clear previous content
-    listOfQuiz.innerHTML = ""
-
-    // Check if quizzes exist
-    if (quizArrayOfObjects.length === 0) {
-        const noQuizMessage = document.createElement("h3")
-        noQuizMessage.innerText = "No quizzes available."
-        listOfQuiz.appendChild(noQuizMessage)
-    } else {
-        // loop through the quizArrayOfObjects and create lists for each quiz
-        quizArrayOfObjects.forEach(quiz => {
-            const quizContainer = document.createElement("div")
-
-            // create h4
-            const questionHeader = document.createElement("h4")
-            questionHeader.innerText = quiz.question
-            quizContainer.appendChild(questionHeader)
-
-            // create ul
-            const optionsList = document.createElement("ul")
-
-            // create li
-            quiz.options.forEach(option => {
-                const optionItem = document.createElement("li")
-                // set option text (loop)
-                optionItem.innerText = option.text 
-                optionsList.appendChild(optionItem)
-               
-                
-            })
-           
-                const correctAnswerbtn=document.createElement("button")
-                correctAnswerbtn.setAttribute("id",quiz.id)
-                correctAnswerbtn.setAttribute("value",quiz.explanation)
-                correctAnswerbtn.innerText="check correct"
-                optionsList.appendChild(correctAnswerbtn)
-                // check explanation
-                correctAnswerbtn.addEventListener("click",(event)=>{
-                    const p=document.createElement("p")
-                    p.innerText=quiz.explanation
-                    optionsList.append(p)
-                    correctAnswerbtn.disabled=true
-
-                })
-            quizContainer.appendChild(optionsList)
-            listOfQuiz.appendChild(quizContainer)
-        })
-    }
-})
-}
-
-// Main 
-GenerateQuizbtn() 
-// validation
-ValidationAndColor()
-// submit
-const fm = document.getElementById("quizForm")
-fm.addEventListener("submit", (event) => {
-    event.preventDefault()
-    const question = document.querySelector("#question").value
-    const option1 = document.querySelector("#option1").value
-    const option2 = document.querySelector("#option2").value
-    const option3 = document.querySelector("#option3").value
-    const option4 = document.querySelector("#option4").value
-    const correctAnswer = document.querySelector("#correctAnswer").value
-
-    // Check for unique options
-    let uniqueOptions = new Set([option1, option2, option3, option4])
-    // error
-    const error = document.getElementById("error")
-    error.innerText=""
-    if (uniqueOptions.size === 4) {
-        let result = createQuizObject(question, option1, option2, option3, option4, correctAnswer)
-        if (typeof(result) === "string") {
-            console.log(result)
-        } else {
-            // reset values
-            document.querySelector("#question").value = ""
-            document.querySelector("#option1").value = ""
-            document.querySelector("#option2").value = ""
-            document.querySelector("#option3").value = ""
-            document.querySelector("#option4").value = ""
-            document.querySelector("#correctAnswer").value = ""
-
-            console.log("quizArrayOfObjects:", quizArrayOfObjects)
-            const quizLength = quizArrayOfObjects.length
-            let quizCountsTagSpan = document.getElementById("quizCounts")
-            if (quizCountsTagSpan) {
-                quizCountsTagSpan.innerText = quizLength
-                // enable generate quiz button
-                GenerateQuizbtn() 
-                // reset color for the inputs
-                validationResetColor()
+        let score = 0
+        quizArrayOfObjects.forEach((quiz, index) => {
+            const selectedOption = document.querySelector(`input[name="quiz-${index}"]:checked`)
+            if (selectedOption && selectedOption.value === quiz.correctAnswer) {
+                score++
             }
+        })
+
+        // update players score
+        player.score += score
+        console.log(`${player.playerName} scored: ${score}`)
+
+        // remove form
+        fm.remove()
+
+        // move to next player
+        callback()
+    })
+}
+// add players and run competition 
+const addPlayersAndRunCompetition = () => {
+
+    const addPlayerbtn = document.getElementById("addPlayersBtn")
+    addPlayerbtn.addEventListener("click", () => {
+        addPlayerbtn.disabled=true
+        // create form
+        const playersForm = document.createElement("div")
+        playersForm.setAttribute("id", "playersForm")
+        
+        // input for player 1
+        const inputPlayer1 = document.createElement("input")
+        inputPlayer1.setAttribute("type", "text")
+        inputPlayer1.setAttribute("placeholder", "Enter Player 1 Name")
+        inputPlayer1.setAttribute("id", "player1")
+        inputPlayer1.setAttribute("name", "player1")
+        inputPlayer1.required = true
+
+        // input for player 2
+        const inputPlayer2 = document.createElement("input")
+        inputPlayer2.setAttribute("type", "text")
+        inputPlayer2.setAttribute("placeholder", "Enter Player 2 Name")
+        inputPlayer2.setAttribute("id", "player2")
+        inputPlayer2.setAttribute("name", "player2")
+        inputPlayer2.required = true
+
+        // submit Button
+        const submitPlayer = document.createElement("input")
+        submitPlayer.setAttribute("type", "submit")
+        submitPlayer.setAttribute("value", "Start Game")
+
+        // append
+        const fm = document.createElement("form")
+        fm.appendChild(inputPlayer1)
+        fm.appendChild(inputPlayer2)
+        fm.appendChild(submitPlayer)
+        playersForm.appendChild(fm)
+        body.appendChild(playersForm) 
+
+        // hide the quiz form if it's open
+        if (quizForm) {
+            // console.log(quizForm) 
+            quizForm.style.display = "none"
+            addQuizBtn.innerHTML = "Add Quiz" // reset add quiz button text
         }
-    } else {
-       
-        error.innerText="Error: need unique options (cannot submit)"
-        return error
-    }
-})
+
+        // submit
+        fm.addEventListener("submit", (event) => {
+            event.preventDefault()
+            submitPlayer.disabled = true
+
+            const player1 = inputPlayer1.value.trim()
+            const player2 = inputPlayer2.value.trim()
+
+            const players = [
+                { playerName: player1, score: 0 },
+                { playerName: player2, score: 0 }
+            ]
+
+            let currentPlayerIndex = 0
+
+            const nextPlayer = () => {
+                // show current player and previous player information
+                const currentPlayer = document.createElement("div")
+                currentPlayer.innerHTML = `<h2>Current Player: ${players[currentPlayerIndex].playerName}</h2>`
+                body.appendChild(currentPlayer)
+
+                    if (currentPlayerIndex > 0) {
+                        const previousPlayer = document.createElement("div")
+                        previousPlayer.innerHTML = `<h3>Previous Player: ${players[currentPlayerIndex - 1].playerName}</h3>`
+                        body.appendChild(previousPlayer)
+                    }
+                // render quiz
+                renderQuiz(players[currentPlayerIndex], () => {
+                    currentPlayerIndex++
+                    if (currentPlayerIndex < players.length) {
+                        currentPlayer.remove() // remove current player info
+                        // console.log(currentPlayerIndex) get increment
+                        nextPlayer() // go to the next player
+                    } else {
+                        // game Over - show all players & scores
+                        const scoresDisplay = document.createElement("div")
+                        scoresDisplay.innerHTML = "<h2>Game Over! Final Scores:</h2>"
+                        
+                        // display results or stats
+                        players.forEach((player) => {
+                            const playerInfo = document.createElement("div")
+                            playerInfo.innerHTML = `<h3>${player.playerName}: ${player.score}</h3>`
+                            scoresDisplay.appendChild(playerInfo)
+                        })
+                        
+                        body.appendChild(scoresDisplay)
+                        
+                        // enable
+                        addPlayerbtn.disabled=false
+
+                        // winner decision
+                        const winner = getWinner(players)
+                        announceWinner(winner)
+
+                        // Clean up
+                        playersForm.innerHTML = ""
+                    }
+                })
+            }
+            nextPlayer() // start the game
+           
+        })
+    })
+}
 
 
-// generate quiz button after click disable
-const generateQuizButton = document.getElementById("generateQuiz")
-generateQuizButton.addEventListener("click", (event) => {
-    if (quizArrayOfObjects.length > 0) {
-        renderQuiz() // Rendering quiz
-        generateQuizButton.disabled = true // Disable button after generating
-    }    
-})
+// search and records
+const quizSearch = () => {
+    const inputField = document.createElement("input")
+    inputField.setAttribute("type", "text")
+    inputField.setAttribute("id", "searchInput")
+    inputField.setAttribute("placeholder", "Search Quiz...")
 
-// show list
+    // div
+    const searchResults = document.createElement("div")
+    searchResults.setAttribute("id", "searchResults")
+    body.insertBefore(searchResults, menuDiv.nextSibling) // place search results below the menu
+
+    // add input field below the menuDiv
+    menuDiv.appendChild(inputField)
+
+    inputField.addEventListener("input", (event) => {
+        const query = event.target.value.trim().toLowerCase()
+        searchResults.innerHTML = "" // clear previous results
+
+            // hide search results if query is empty
+            if (query === "") {
+                searchResults.style.display = "none" 
+                return // exit the function early
+            } else {
+                searchResults.style.display = "block" // show search results
+            }
+
+        let found = false
+
+        quizArrayOfObjects.forEach((quiz) => {
+            if (quiz.question.toLowerCase().includes(query)) {
+                found = true
+
+                const quizContainer = document.createElement("div")
+
+                // highlight matching part
+                const highlightedQuestion = quiz.question.replace(new RegExp(query, "gi"), (match) => `<mark>${match}</mark>`)
+
+                const questionHeader = document.createElement("h4")
+                questionHeader.innerHTML = highlightedQuestion
+                quizContainer.appendChild(questionHeader)
+
+                // Create list of options
+                const optionsList = document.createElement("ul")
+                quiz.options.forEach(option => {
+                    const optionItem = document.createElement("li")
+                    optionItem.innerText = option
+                    optionsList.appendChild(optionItem)
+                })
+
+                quizContainer.appendChild(optionsList)
+                searchResults.appendChild(quizContainer)
+
+                // Add underline using <hr>
+                const separator = document.createElement("hr")
+                separator.style.margin = "10px 0" // add spacing
+                searchResults.appendChild(separator) // append separator after each quiz
+            }
+        })
+
+        if (!found) {
+            searchResults.innerHTML = "<h3>No matching quizzes found.</h3>"
+        }
+    })
+}
+
+
+// main program
+createAndAddQuiz()
 quizList()
-
-
-
-
-
-
-
+addPlayersAndRunCompetition()
+quizSearch()

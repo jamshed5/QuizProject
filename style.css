@@ -1,35 +1,46 @@
 body{
-    font-family: Arial, Helvetica, sans-serif;
-    font-size: 16px;
+    margin: 0;
 }
-
+#menuDiv{
+    margin: auto;
+    background-color: rgb(189, 189, 189);
+}
+button{
+    padding: 5px;
+    margin: 5px;
+}
 #quizForm{
-    width: 600px;
-    /* margin: 0px auto; */
-}
-
-#quizForm > label {
-    display: block; 
-    margin-top: 10px;
-    margin-bottom: 10px; 
-}
-
-#quizForm > textarea{
-    width: 100%;
-    padding: 10px;
-    background-color: rgb(242, 242, 242);
-    border: 1px solid rgb(179, 179, 179);
+    flex-direction: column;
+    margin: auto;
     font-family: Arial, Helvetica, sans-serif;
-    
+    background-color: rgb(222, 222, 222);
+    padding: 40px;
 }
-#quizForm > input{
-    width: 100%;
+#quizForm>label{
+    padding-bottom:10px;
+    padding-top: 10px;
+}
+#quizForm>input{
     padding: 10px;
-    background-color: rgb(242, 242, 242);
-    border: 1px solid rgb(179, 179, 179);
-
 }
-#quizForm > button{
-  padding: 10px;
-  margin-top: 10px;
+#submitQuizBtn{
+    margin: 0;
+    margin-top: 10px;
+    padding: 10px;
+}
+#playersForm>form{
+    display: flex;
+    flex-direction: column;
+    margin: auto;
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: rgb(222, 222, 222);
+    padding: 40px;
+}
+#playersForm>form>input{
+     padding: 10px;
+     margin-top: 10px;
+}
+#searchInput{
+    padding: 5px;
+    width: 200px;
 }
