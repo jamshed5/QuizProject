@@ -3,11 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quiz App</title>
     <link rel="stylesheet" href="style.css">
+    <title>Quiz App</title>
 </head>
 <body>
-    
-    <script src="script.js"></script>
+    <nav>
+    <h2>Quiz App</h2>
+      <ul>
+        <li><a href="/">All Quizs</a></li>
+        <li><a href="/players.html">Add Players & Run Competition</a></li>
+      </ul>      
+    </nav>
+    <!-- search -->
+    <div class="searchContainer">
+        <input type="text" class="inputQuery" placeholder="Search...">
+    </div>
+    <!-- order -->
+    <div class="orderContainer">
+      <label for="sortOrder">Sort Order:</label>
+      <select id="sortOrder">
+          <option value="ascending" selected>Ascending</option>
+          <option value="descending">Descending</option>
+      </select>
+    </div>
+    <!-- quizzes -->
+    <div class="quizBoxDiv"></div>
+    <div class="notFoundMessage"></div>
+
+    <script src="main.js" type="module"></script> <!-- Link to your main JavaScript file -->
 </body>
 </html>
