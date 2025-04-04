@@ -1,5 +1,3 @@
-import { quizsData } from "./featchingApi/quizsData.js" 
-
 // formating html
 const displayQuizList = (quizArrayOfObjects) => {
   const quizBoxDiv = document.querySelector(".quizBoxDiv") 

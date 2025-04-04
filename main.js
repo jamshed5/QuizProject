@@ -1,38 +1,52 @@
-// imports
-import { quizsData } from "./featchingApi/quizsData.js"
-import { quizList } from "./quizlist.js"
-import { addPlayersAndRunCompetition } from "./addPlayersAndRunCompetition.js"
+// Imports
+import { quizsData } from "./featchingApi/quizsData.js" 
+import { quizList } from "./quizlist.js" 
+import { addPlayersAndRunCompetition } from "./addPlayersAndRunCompetition.js" 
 
-// setting global quizArrayOfObjects
-let quizArrayOfObjects
+// page link
+let pathName = window.location.pathname 
 
-// check page
-if (document.title.includes("Quiz App")) {
-    console.log("page = all Quiz")
-    // fetch data
-    quizsData()
-        .then((fetchData) => {
-            quizArrayOfObjects = fetchData
+// testing async behavior
+console.log("statement - 1") 
 
-            // catching search and filter
-            const inputField = document.querySelector(".inputQuery")
-            const sortOrderDropdown = document.getElementById("sortOrder")
+async function fetchAndMainDecision() {
+  try {
+    // assign when data is available
+    const quizArrayOfObjects = await quizsData() 
 
-            // passing and calling
-            quizList(quizArrayOfObjects, inputField, sortOrderDropdown)
-        })
-} else if (document.title.includes("Add Players & Run Competition")) {
-    console.log("page = Add Players & Run Competition")
-    // fetch data
-    quizsData()
-        .then((fetchData) => {
-            quizArrayOfObjects = fetchData
+    // test async behavior (promises)
+    console.log(quizArrayOfObjects)
 
-            // catching search and filter
-            const player1Input = document.querySelector(".player1")
-            const player2Input = document.querySelector(".player2")
+    // quizArrayOfObjects is 0 or not exist
+    if (!quizArrayOfObjects || quizArrayOfObjects.length === 0) {
+      console.log("no data found or empty data") 
+      return 
+    }
 
-            // passing and calling
-            addPlayersAndRunCompetition(quizArrayOfObjects, player1Input, player2Input)
-        })
+    if (pathName.includes("index.html") || pathName === "/") {
+      // catching search and filter elements
+      const inputField = document.querySelector(".inputQuery") 
+      const sortOrderDropdown = document.getElementById("sortOrder") 
+      // call and passing parameters
+      quizList(quizArrayOfObjects, inputField, sortOrderDropdown) 
+    } else if (pathName.includes("/players.html")) {
+      // catching players
+      const player1Input = document.querySelector(".player1") 
+      const player2Input = document.querySelector(".player2") 
+      // call and passing parameters
+      addPlayersAndRunCompetition(
+        quizArrayOfObjects,
+        player1Input,
+        player2Input
+      ) 
+    }
+  } catch (error) {
+    console.error("error fetching quiz data:", error) 
+  }
 }
+
+// call async function
+fetchAndMainDecision() 
+
+console.log("statement - 2") 
+console.log("statement - 3") 

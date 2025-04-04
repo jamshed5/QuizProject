@@ -1,19 +1,25 @@
-// fetching api
-const quizsData = () => {
-  return fetch(
-    "https://raw.githubusercontent.com/jamshed5/jamshed.quizapi.io/main/quizsdata/quizs.json"
-  )
-    .then((response) => {
-      // check 201 ok or not
-      if (!response.ok) {
-        throw new Error(`http status: ${response.status}`) 
-      }
-      return response.json() 
-    })
-    .catch((error) => {
-      console.error("error:", error) 
-      throw error 
-    }) 
-} 
+// fetch data
+const quizsData=async ()=>{
+    try{
+        const response=await fetch("https://raw.githubusercontent.com/jamshed5/jamshed.quizapi.io/main/quizsdata/quizs.json")
+        // if response is not 200 ok 
+        if(!response.ok){
+          throw new Error(`http status: ${response.status}`)
+        }
+        
+        // console.log(response.status)
+        // wait for json conversion
+        const data=await response.json()
+        return data
 
-export { quizsData } 
+     }
+    catch(error){
+      console.log("failed to fetch quiz data", error.message)
+      // return empty 
+      return [];  
+    }
+}
+
+// named export 
+export {quizsData}
+
